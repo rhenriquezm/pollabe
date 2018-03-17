@@ -7,9 +7,50 @@ var bcrypt = require('bcrypt-nodejs');
 //models
 
 var User = require('../models/user');
-var Role = require('../models/role');
 
 //actions
+
+function getUsers(req, res) {
+    User.find({}).exec((err, users) => {
+        if (err) {
+            res.status(500).send({
+                message: "Error en la peticion"
+            });
+        } else {
+            if (!users) {
+                res.status(404).send({
+                    message: "No hay usuarios"
+                });
+            } else {
+                res.status(200).send({
+                    users: users
+                });
+            }
+
+        }
+    })
+}
+
+function getUserById(req, res) {
+    User.findOne({ _id: req.params.id }).exec((err, user) => {
+        if (err) {
+            res.status(500).send({
+                message: "Error en la peticion"
+            });
+        } else {
+            if (!user) {
+                res.status(404).send({
+                    message: "No exite el usuario"
+                });
+            } else {
+                res.status(200).send({
+                    user: user
+                });
+            }
+
+        }
+    })
+}
 
 function saveUser(req, res) {
 
@@ -67,8 +108,31 @@ function saveUser(req, res) {
         });
     }
 }
+
+function deleteUser(req, res) {
+    User.findByIdAndRemove(req.params.id, (err, userRemoved) => {
+        if (err) {
+            res.status(500).send({
+                message: 'Error en la petición'
+            });
+        } else {
+            if (!userRemoved) {
+                res.status(404).send({
+                    message: 'No se ha encontrado el usuario'
+                });
+            } else {
+                res.status(200).send({
+                    user: userRemoved
+                });
+            }
+        }
+    })
+}
 //actions
 
 module.exports = {
-    saveUser
+    saveUser,
+    getUsers,
+    getUserById,
+    deleteUser
 };
