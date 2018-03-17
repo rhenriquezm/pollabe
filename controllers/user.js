@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt-nodejs');
 //models
 
 var User = require('../models/user');
+var Role = require('../models/role');
 
 //actions
 
@@ -17,7 +18,7 @@ function saveUser(req, res) {
     // Recoger el body de la peticion
     var params = req.body;
 
-    if (params.user_name, params.user_lastname, params.user_email, params.user_pass, params.role_id) {
+    if (params.user_pass && params.user_name && params.user_lastname && params.user_email && params.role_id) {
 
         user.user_name = params.user_name;
         user.user_lastname = params.user_lastname;
@@ -25,54 +26,45 @@ function saveUser(req, res) {
         user.user_pass = params.user_pass;
         user.role_id = params.role_id;
 
-        console.log(user);
-
-        user.save((err, userStored) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.status(200).send({
-                    user: userStored
-                })
-            }
-        })
-
-        /*User.findOne({ user_email: user.user_email.toLowerCase() }, (err, issetUser) => {
+        User.findOne({ user_email: user.user_email.toLowerCase() }, (err, issetUser) => {
             if (err) {
                 res.status(500).send({
-                    message: 'Error al comprobar el usuario'
-                })
+                    message: "Error al comprobar el usuario"
+                });
             } else {
-                console.log(issetUSer);
                 if (!issetUser) {
                     bcrypt.hash(params.user_pass, null, null, function (err, hash) {
-                        user.user_pass = hash;
-
-                        user.save((err, userStored => {
+                        params.user_pass = hash;
+                        user.save((err, userStored) => {
                             if (err) {
                                 res.status(500).send({
-                                    message: 'Error al guardar el usuario'
-                                })
+                                    message: "Error al guardar el usuario"
+                                });
                             } else {
                                 if (!userStored) {
-                                    res.status(404).send({ message: 'No se ha registrado el usuario' })
+                                    res.status(404).send({
+                                        message: "No se ha podido guardar el usuario"
+                                    });
                                 } else {
-                                    res.status(200).send({ user: userStored })
+                                    res.status(200).send({
+                                        user: userStored
+                                    });
                                 }
                             }
-                        }))
+                        });
                     })
                 } else {
-                    res.status(200).send({
-                        message: 'El usuario no puede registrarse por que ya existe'
-                    })
+                    res.status(500).send({
+                        message: "El usuario ya existe"
+                    });
                 }
             }
-        })*/
-    } else {
-        res.status(200).send({
-            message: 'Introduce los datos correctamente'
         })
+
+    } else {
+        res.status(500).send({
+            message: "Introduce los datos correctamente"
+        });
     }
 }
 //actions

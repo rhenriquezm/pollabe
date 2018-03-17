@@ -8,7 +8,7 @@ var UserSchema = Schema({
     user_lastname: String,
     user_email: String,
     user_pass: String,
-    role_id: { type: Schema.ObjectId, ref: 'Role' }
+    role_id: { type: Schema.Types.ObjectId, ref: 'Role' }
 });
 
 module.exports = mongoose.model('User', UserSchema);

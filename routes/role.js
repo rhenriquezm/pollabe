@@ -5,6 +5,6 @@ var RoleController = require('../controllers/role');
 
 var api = express.Router();
 
-api.post('/register', RoleController.saveRole);
+api.post('/role', RoleController.saveRole);
 
 module.exports = api;
