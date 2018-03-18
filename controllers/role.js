@@ -1,12 +1,6 @@
 'use strict'
 
-//Modulos
-
-//models
-
 var Role = require('../models/role');
-
-//actions
 
 function getRoles(req, res) {
     Role.find({}).exec((err, roles) => {
@@ -30,7 +24,7 @@ function getRoles(req, res) {
 }
 
 function getRoleById(req, res) {
-    Role.findOne({ _id: req.params.id }).exec((err, rol) => {
+    Role.findById(req.params.id).exec((err, rol) => {
         if (err) {
             res.status(500).send({
                 message: "Error en la peticion"
@@ -51,13 +45,10 @@ function getRoleById(req, res) {
 }
 
 function saveRole(req, res) {
-    // Crear objeto Role
-    var role = new Role();
 
-    // Recoger el body de la peticion
+    var role = new Role();
     var params = req.body;
 
-    //Asignar valores al objeto usuario
     if (params.role_name && params.role_description) {
         role.role_name = params.role_name;
         role.role_description = params.role_description;
@@ -118,10 +109,34 @@ function deleteRole(req, res) {
     })
 }
 
+function updateRole(req, res) {
+    var roleId = req.params.id;
+    var update = req.body;
+
+    Role.findByIdAndUpdate(roleId, update, (err, roleUpdated) => {
+        if (err) {
+            res.status(500).send({
+                message: "Error en la petición"
+            });
+        } else {
+            if (!roleUpdated) {
+                res.status(404).send({
+                    message: "Role no encontrado"
+                });
+            } else {
+                res.status(200).send({
+                    role: roleUpdated
+                });
+            }
+        }
+    })
+}
+
 
 module.exports = {
     saveRole,
     getRoles,
     getRoleById,
-    deleteRole
+    deleteRole,
+    updateRole
 };

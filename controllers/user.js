@@ -2,13 +2,7 @@
 
 var bcrypt = require('bcrypt-nodejs');
 
-//Modulos
-
-//models
-
 var User = require('../models/user');
-
-//actions
 
 function getUsers(req, res) {
     User.find({}).exec((err, users) => {
@@ -32,7 +26,9 @@ function getUsers(req, res) {
 }
 
 function getUserById(req, res) {
-    User.findOne({ _id: req.params.id }).exec((err, user) => {
+    var userId = req.params.id;
+
+    User.findById(userId, (err, user) => {
         if (err) {
             res.status(500).send({
                 message: "Error en la peticion"
@@ -56,18 +52,17 @@ function saveUser(req, res) {
 
     var user = new User();
 
-    // Recoger el body de la peticion
     var params = req.body;
 
     if (params.user_pass && params.user_name && params.user_lastname && params.user_email && params.role_id) {
 
         user.user_name = params.user_name;
         user.user_lastname = params.user_lastname;
-        user.user_email = params.user_email;
+        user.user_email = params.user_email.toLowerCase();
         user.user_pass = params.user_pass;
         user.role_id = params.role_id;
 
-        User.findOne({ user_email: user.user_email.toLowerCase() }, (err, issetUser) => {
+        User.findOne({ user_email: user.user_email }, (err, issetUser) => {
             if (err) {
                 res.status(500).send({
                     message: "Error al comprobar el usuario"
@@ -101,7 +96,6 @@ function saveUser(req, res) {
                 }
             }
         })
-
     } else {
         res.status(500).send({
             message: "Introduce los datos correctamente"
@@ -109,8 +103,33 @@ function saveUser(req, res) {
     }
 }
 
+function updateUser(req, res) {
+    var userId = req.params.id;
+    var update = req.body;
+
+    User.findByIdAndUpdate(userId, update, (err, userUpdated) => {
+        if (err) {
+            res.status(500).send({
+                message: "Error en la petición"
+            });
+        } else {
+            if (!userUpdated) {
+                res.status(404).send({
+                    message: "Usuario no encontrado"
+                });
+            } else {
+                res.status(200).send({
+                    user: userUpdated
+                });
+            }
+        }
+    })
+}
+
 function deleteUser(req, res) {
-    User.findByIdAndRemove(req.params.id, (err, userRemoved) => {
+    var userId = req.params.id;
+
+    User.findByIdAndRemove(userId, (err, userRemoved) => {
         if (err) {
             res.status(500).send({
                 message: 'Error en la petición'
@@ -128,11 +147,11 @@ function deleteUser(req, res) {
         }
     })
 }
-//actions
 
 module.exports = {
     saveUser,
     getUsers,
     getUserById,
-    deleteUser
+    deleteUser,
+    updateUser
 };
