@@ -1,21 +1,21 @@
 'use strict'
 
-var Role = require('../models/role');
+var Award = require('../models/award');
 
-function getRoles(req, res) {
-    Role.find({}).exec((err, roles) => {
+function getAwards(req, res) {
+    Award.find({}).exec((err, award) => {
         if (err) {
             res.status(500).send({
                 message: "Error en la peticion"
             });
         } else {
-            if (!roles) {
+            if (!award) {
                 res.status(404).send({
-                    message: "No hay roles"
+                    message: "No hay Premios"
                 });
             } else {
                 res.status(200).send({
-                    roles: roles
+                    award: award
                 });
             }
 
@@ -23,20 +23,20 @@ function getRoles(req, res) {
     })
 }
 
-function getRoleById(req, res) {
-    Role.findById(req.params.id, (err, rol) => {
+function getAwardById(req, res) {
+    Award.findById(req.params.id, (err, award) => {
         if (err) {
             res.status(500).send({
                 message: "Error en la peticion"
             });
         } else {
-            if (!rol) {
+            if (!award) {
                 res.status(404).send({
-                    message: "No exite el rol"
+                    message: "No exite el premio"
                 });
             } else {
                 res.status(200).send({
-                    rol: rol
+                    award: award
                 });
             }
 
@@ -44,33 +44,33 @@ function getRoleById(req, res) {
     })
 }
 
-function saveRole(req, res) {
+function saveAward(req, res) {
 
-    var role = new Role();
+    var award = new Award();
     var params = req.body;
 
-    if (params.role_name && params.role_description) {
-        role.role_name = params.role_name;
-        role.role_description = params.role_description;
+    if (params.award_amount && params.award_description) {
+        award.award_amount = params.award_amount;
+        award.award_description = params.award_description;
 
-        Role.findOne({ role_name: role.role_name.toLowerCase() }, (err, issetRole) => {
+        Award.findOne({ award_amount: award.award_amount }, (err, issetAward) => {
             if (err) {
-                res.status(500).send({ message: 'Error al comprobar el rol' });
+                res.status(500).send({ message: 'Error al comprobar el premio' });
             } else {
-                if (!issetRole) {
-                    role.save((err, roleStored) => {
+                if (!issetAward) {
+                    award.save((err, awardStored) => {
                         if (err) {
                             res.status(500).send({
-                                message: 'Error al guardar el rol'
+                                message: 'Error al guardar el premio'
                             })
                         } else {
-                            if (!roleStored) {
+                            if (!awardStored) {
                                 res.status(404).send({
-                                    message: 'No se ha registrado el rol'
+                                    message: 'No se ha registrado el premio'
                                 })
                             } else {
                                 res.status(200).send({
-                                    role: roleStored
+                                    award: awardStored
                                 })
                             }
                         }
@@ -89,54 +89,53 @@ function saveRole(req, res) {
     }
 }
 
-function deleteRole(req, res) {
-    Role.findByIdAndRemove(req.params.id, (err, roleRemoved) => {
+function deleteAward(req, res) {
+    Award.findByIdAndRemove(req.params.id, (err, awardRemoved) => {
         if (err) {
             res.status(500).send({
                 message: 'Error en la petición'
             });
         } else {
-            if (!roleRemoved) {
+            if (!awardRemoved) {
                 res.status(404).send({
-                    message: 'No se ha encontrado el usuario'
+                    message: 'No se ha encontrado el premio'
                 });
             } else {
                 res.status(200).send({
-                    role: roleRemoved
+                    award: awardRemoved
                 });
             }
         }
     })
 }
 
-function updateRole(req, res) {
-    var roleId = req.params.id;
+function updateAward(req, res) {
+    var awardId = req.params.id;
     var update = req.body;
 
-    Role.findByIdAndUpdate(roleId, update, (err, roleUpdated) => {
+    Award.findByIdAndUpdate(awardId, update, (err, awardUpdated) => {
         if (err) {
             res.status(500).send({
                 message: "Error en la petición"
             });
         } else {
-            if (!roleUpdated) {
+            if (!awardUpdated) {
                 res.status(404).send({
-                    message: "Role no encontrado"
+                    message: "No se ha encontrado el premio"
                 });
             } else {
                 res.status(200).send({
-                    role: roleUpdated
+                    award: awardUpdated
                 });
             }
         }
     })
 }
 
-
 module.exports = {
-    saveRole,
-    getRoles,
-    getRoleById,
-    deleteRole,
-    updateRole
+    saveAward,
+    getAwards,
+    getAwardById,
+    deleteAward,
+    updateAward
 };
