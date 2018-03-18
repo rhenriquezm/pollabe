@@ -77,7 +77,7 @@ function saveAward(req, res) {
                     })
                 } else {
                     res.status(200).send({
-                        message: 'El rol no puede registrarse por que ya existe'
+                        message: 'El premio no puede registrarse por que ya existe'
                     })
                 }
             }
