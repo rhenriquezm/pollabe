@@ -54,9 +54,6 @@ function saveDrawInfo(req, res) {
     
     params.drawInfo_date = moment();
 
-    console.log(moment());
-    console.log(params);
-
     if (params.drawInfo_date && params.draw_id && params.season_id) {
         drawInfo.drawInfo_date = params.drawInfo_date;
         drawInfo.draw_id = params.draw_id;

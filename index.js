@@ -4,8 +4,10 @@ var mongoose = require('mongoose');
 var app = require('./app');
 var port = process.env.PORT || 3789;
 
-var urlMLab = 'mongodb://rhenriquez:18denoviembredel@ds137336.mlab.com:37336/testmongo';
-var urlLocal = 'mongodb://localhost:27017/Polla';
+require('dotenv').config();
+
+var urlMLab = process.env.URL_MLAB;
+var urlLocal = process.env.URL_LOCAL;
 
 mongoose.connect(urlLocal)
     .then(() => {
