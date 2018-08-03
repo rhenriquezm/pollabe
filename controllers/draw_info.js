@@ -51,7 +51,7 @@ function saveDrawInfo(req, res) {
     var params = req.body;
 
     //fecha temporal
-    
+
     params.drawInfo_date = moment();
 
     if (params.drawInfo_date && params.draw_id && params.season_id) {

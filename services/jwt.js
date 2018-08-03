@@ -3,9 +3,15 @@
 var jwt = require('jwt-simple');
 var moment = require('moment');
 
-var secret = process.env.SECRET_KEY_JWT;
+//var secret = process.env.SECRET_KEY_JWT;
+
+//console.log(process.env.SECRET_KEY_JWT);
+//var secret = "estaesmiclavesecretapaljwt";
 
 exports.createToken = function (user) {
+
+    var secret = process.env.SECRET_KEY_JWT;
+
     var payload = {
         sub: user._id,
         name: user.user_name,
